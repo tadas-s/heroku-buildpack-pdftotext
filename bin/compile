@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p "$1/bin/"
+# TODO: multiple binaries for specific $STACK
+cp "bin/pdftotext" "$1/bin/pdftotext"
+echo "-----> poppler-buildpack: Installed to app/bin"
+exit 0
