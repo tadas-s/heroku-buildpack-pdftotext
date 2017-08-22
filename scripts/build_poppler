@@ -1,0 +1,25 @@
+#!/bin/bash
+POPPLER_VERSION=${POPPLER_VERSION-0.57.0}
+
+poppler_tarball_url=https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz
+
+temp_dir=$(mktemp -d /tmp/poppler.XXXXXXXXXX)
+
+echo "Serving files from /tmp on $PORT"
+cd /tmp
+python -m SimpleHTTPServer $PORT &
+
+cd $temp_dir
+echo "Temp dir: $temp_dir"
+
+echo "Downloading $poppler_tarball_url"
+curl -L $poppler_tarball_url | tar xJ
+
+(
+	cd poppler-${POPPLER_VERSION}
+	./configure \
+	  --enable-libopenjpeg=none
+	make install
+)
+
+cp /tmp/poppler/sbin/poppler $1
