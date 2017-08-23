@@ -1,25 +1,33 @@
 #!/bin/bash
+
 POPPLER_VERSION=${POPPLER_VERSION-0.57.0}
+POPPLER_TARBALL_URL="https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz"
+TEMP_DIR=$(mktemp -d /tmp/poppler.XXXXXXXXXX)
 
-poppler_tarball_url=https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz
-
-temp_dir=$(mktemp -d /tmp/poppler.XXXXXXXXXX)
+#if ! [ -x "$(command -v xc)" ]; then
+#  export DEBIAN_FRONTEND=noninteractive
+#  apt-get update
+#  apt-get install -y xz-utils
+#fi
 
 echo "Serving files from /tmp on $PORT"
 cd /tmp
 python -m SimpleHTTPServer $PORT &
 
-cd $temp_dir
-echo "Temp dir: $temp_dir"
+cd $TEMP_DIR
+echo "Temp dir: $TEMP_DIR"
 
-echo "Downloading $poppler_tarball_url"
-curl -L $poppler_tarball_url | tar xJ
+echo "Downloading $POPPLER_TARBALL_URL"
+curl -L $POPPLER_TARBALL_URL | tar xJ
 
 (
 	cd poppler-${POPPLER_VERSION}
 	./configure \
+	  --prefix=/tmp/poppler \
+	  --disable-shared \
+	  --enable-build-type=release \
 	  --enable-libopenjpeg=none
 	make install
 )
 
-cp /tmp/poppler/sbin/poppler $1
+cp /tmp/poppler/bin/pdftotext $1

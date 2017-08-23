@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-echo "Dummy pretending to be pdftotext executable"
