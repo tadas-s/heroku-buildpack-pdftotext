@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
-# bin/detect <build-dir>
-echo 'poppler-buildpack'
+echo 'pdftotext-buildpack'
 exit 0
